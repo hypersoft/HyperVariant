@@ -1,6 +1,6 @@
 /*
 
-Sun Feb 16 21:50:41 CST 2014
+Sun Feb 16 22:03:03 CST 2014
 
 Copyright (c) 2014, Triston J. Taylor
 All rights reserved.
@@ -28,39 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-<<<<<<< HEAD
-=======
-#define HyperVariant_c
 #include "HyperVariant.h"
-#undef HyperVariant_c
+#include <stdio.h>
 
-typedef struct sHyperVariant {
-	void * private; size_t type;
-	size_t size; size_t length;
-	char data[];
-} HyperVariant;
-
-
-void * varcreate(size_t length, double data, HyperVariantType type)
+int main ( int argc, char **argv )
 {
-	HyperVariant * var; void * ptr = ptrVar(data);
-	if (type & HVT_UTF8) {
-		if (length == 0 && ptr) length = strlen(ptr); length++;
-	}
-	var = malloc(sizeof(HyperVariant) + length);
-	if (type & HVT_UTF8)  var->data[length--] = 0;
-	if (var) { var->type = type, var->length = 1;
-		if (type & HVT_POINTER || type & HVT_INT) {
-			var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
-		} else if (type & HVT_DOUBLE) {
-			var->size = sizeof(double),	dblPtrVal(var->data) = data;
-		} else if (type & HVT_UTF8) {
-			var->size = 1; memcpy(var->data, ptr, (var->length = length));
-		} else if (type & HVT_BLOCK) {
-			memcpy(var->data, ptr, (var->size = length));
-		}
-	}
-	return var->data;
+	HyperVariant var = varcreate(dblVal(17));
+	printf ("%i\n", varsize(var));
+	varfree(var);
+	return 0;
 }
-
->>>>>>> 78fde29... Show up and show out

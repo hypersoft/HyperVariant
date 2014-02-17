@@ -28,3 +28,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef HyperVariant_h
+#define HyperVariant_h
+
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+
+typedef enum eVariantType {
+	VT_INT = 1 << 1,
+	VT_DOUBLE = 1 << 2,
+	VT_POINTER = 1 << 3,
+	VT_UTF8 = 1 << 4,
+	VT_BLOCK = 1 << 5,
+} VariantType;
+
+#define ptrVar(d) ((void*)(uint)(d))
+#define dblInt(i) ((double)(uint)(i))
+
+#define intVal(i) sizeof(uint), dblInt(i), VT_INT
+#define ptrVal(p) sizeof(void *), dblInt(p), VT_POINTER
+#define dblVal(d) sizeof(double), d, VT_DOUBLE
+
+#define strVal(s, l) l, dblInt(s), VT_UTF8
+#define blkVal(b, s) s, dblInt((void*)b), VT_BLOCK
+
+#define blkPtr(t, p) ((t*)(p))
+
+#define intPtr(p) blkPtr(uint, p)
+#define intPtrVal(p) *intPtr(p)
+
+#define ptrPtr(p) blkPtr(void*, p)
+#define ptrPtrVal(p) *ptrPtr(p)
+
+#define dblPtr(p) blkPtr(double, p)
+#define dblPtrVal(p) *dblPtr(p)
+
+#define strPtr(p) blkPtr(char, p)
+#define strPtrVal *strPtr(p)
+
+#define varfree(v) free(intPtr(v - ((sizeof(size_t) << 1) << 1))); v = NULL
+#define varsize(v) intPtrVal(v - (sizeof(size_t) << 1))
+#define varlen(v) intPtrVal(v - sizeof(size_t))
+#define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))
+
+typedef void * variant;
+
+#ifndef HyperVariant_c
+	#define HyperVariantLinkage extern
+#else
+	#define HyperVariantLinkage
+#endif
+
+HyperVariantLinkage variant
+varcreate(size_t length, double data, VariantType type);
+#undef HyperVariantLinkage
+#endif

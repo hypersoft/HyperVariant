@@ -1,6 +1,6 @@
 /*
 
-Sun Feb 16 21:50:41 CST 2014
+Sun Feb 16 22:03:03 CST 2014
 
 Copyright (c) 2014, Triston J. Taylor
 All rights reserved.
@@ -28,35 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#define HyperVariant_c
 #include "HyperVariant.h"
-#undef HyperVariant_c
+#include <stdio.h>
 
-typedef struct hash_table_variant_s {
-	void * private; VariantType type;
-	size_t size; size_t length;
-	char data[];
-} HyperVariant;
-
-void * varcreate(size_t length, double data, VariantType type)
+int main ( int argc, char **argv )
 {
-	HyperVariant * var; void * ptr = ptrVar(data);
-	if (type & VT_UTF8) {
-		if (length == 0 && ptr) length = strlen(ptr); length++;
-	}
-	var = malloc(sizeof(HyperVariant) + length);
-	if (type & VT_UTF8)  var->data[length--] = 0;
-	if (var) { var->type = type, var->length = 1;
-		if (type & VT_POINTER || type & VT_INT) {
-			var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
-		} else if (type & VT_DOUBLE) {
-			var->size = sizeof(double),	dblPtrVal(var->data) = data;
-		} else if (type & VT_UTF8) {
-			var->size = 1; memcpy(var->data, ptr, (var->length = length));
-		} else if (type & VT_BLOCK) {
-			memcpy(var->data, ptr, (var->size = length));
-		}
-	}
-	return var->data;
+	variant var = varcreate(dblVal(17));
+	printf ("%i\n", varsize(var));
+	varfree(var);
+	return 0;
 }
-

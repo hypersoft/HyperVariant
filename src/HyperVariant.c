@@ -28,11 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 17b1e113d989d1865b311c4deb8ca31a5f52f75e
 #define HyperVariant_c
 #include "HyperVariant.h"
 #undef HyperVariant_c
@@ -62,7 +57,3 @@ HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 	return var->data;
 }
 
-<<<<<<< HEAD
->>>>>>> 78fde29... Show up and show out
-=======
->>>>>>> 17b1e113d989d1865b311c4deb8ca31a5f52f75e

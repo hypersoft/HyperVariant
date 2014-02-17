@@ -33,8 +33,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main ( int argc, char **argv )
 {
-	HyperVariant var = varcreate(dblVal(17));
-	printf ("%i\n", varsize(var));
+	/* Setup shop, elbow drop from the top */
+	HyperVariant var = varcreate(strVal("Hello World!", 0));
+
+	puts("Testing immediate string data (Hello World!)...");
+	printf("Length: %i; value: %s\n", varlen(var), var);
+	puts("cleaning up...");
 	varfree(var);
+
+	printf("\n");
+
+	var = varcreate(strVal(argv[0], 0));
+	puts("Testing static string data (argv[0])...");
+	printf("Length: %i; value: %s\n", varlen(var), var);
+	puts("cleaning up...");
+	varfree(var);
+
+	printf("\n");
+
+	var = varcreate(intVal(255));
+	puts("Testing integer data (255)...");
+	printf("Size: %i; value: %i\n", varsize(var), intPtrVal(var));
+	puts("cleaning up...");
+	varfree(var);
+
+	printf("\n");
+
+	var = varcreate(dblVal(1234.5678));
+	puts("Testing integer data (1234.5678)...");
+	printf("Size: %i; value: %.8g\n", varsize(var), dblPtrVal(var));
+	puts("While we have a variant, test the private data...");
+	varprvt(var) = argv[0];
+	if (varprvt(var) != argv[0]) puts("uhhh.. private data doesn't match up..");
+	else puts("Good to go..");
+	puts("cleaning up...");
+	varfree(var);
+
+	
+	printf("\nI'd say she's in good working order captain...\n\n");
+
+
 	return 0;
 }

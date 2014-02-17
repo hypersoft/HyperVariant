@@ -38,22 +38,22 @@ typedef struct sHyperVariant {
 	char data[];
 } iHyperVariant;
 
-
 HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 {
 	iHyperVariant * var; void * ptr = ptrVar(data);
-	if (type & HVT_UTF8) if (length == 0 && ptr) length = strlen(ptr); length++;
+	if (type & HVT_UTF8) { if (length == 0 && ptr) length = strlen(ptr); length++; }
 	var = malloc(sizeof(iHyperVariant) + length);
-	if (var && (type & HVT_UTF8)) var->data[length--] = 0,
-	var->size = 1, memcpy(var->data, ptr, (var->length = length));
-	else if (var) { var->type = type, var->length = 1;
-		if (type & HVT_POINTER || type & HVT_INT)
-			var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
-		else if (type & HVT_DOUBLE)
-			var->size = sizeof(double),	dblPtrVal(var->data) = data;
-		else if (type & HVT_BLOCK)
-			memcpy(var->data, ptr, (var->size = length));
-	}
-	return var->data;
+	if (var) { var->private = 0;
+		if (type & HVT_UTF8) var->data[length--] = 0, var->size = 1, 
+			memcpy(var->data, ptr, (var->length = length));
+		else { var->type = type, var->length = 1;
+			if (type & HVT_POINTER || type & HVT_INT)
+				var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
+			else if (type & HVT_DOUBLE)
+				var->size = sizeof(double),	dblPtrVal(var->data) = data;
+			else if (type & HVT_BLOCK)
+				memcpy(var->data, ptr, (var->size = length));
+		} return var->data;
+	} return NULL;
 }
 

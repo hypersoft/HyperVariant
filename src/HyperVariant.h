@@ -68,6 +68,7 @@ typedef enum eHyperVariantType {
 #define strPtrVal *strPtr(p)
 
 #define varfree(v) free(intPtr(v - ((sizeof(size_t) << 1) << 1))); v = NULL
+#define varprvt(v) ptrPtrVal(v - ((sizeof(size_t) << 1) << 1))
 #define varsize(v) intPtrVal(v - (sizeof(size_t) << 1))
 #define varlen(v) intPtrVal(v - sizeof(size_t))
 #define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))

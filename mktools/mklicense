@@ -18,6 +18,12 @@ if [ "$1" == 'sh' ] || [ "$1" == bash ] || [ "$1" == dash ]; then
 	exit 0;
 fi;
 
+if [ "$1" == 'mk' ] || [ "$1" == Makefile ]; then
+	printf "#\n# `date`\n#\n" "$(set -- `type -p $1`; echo -n ${@:$#})";
+	cat $INPUT | sed -re 's/^/# /g'; printf '\n\n';
+	exit 0;
+fi;
+
 echo Unrecognizd source code profile; expected c, sh, bash or dash >&2;
 exit 1;
 

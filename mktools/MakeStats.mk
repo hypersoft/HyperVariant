@@ -128,7 +128,7 @@ ifeq (TRUE, $(BUILD_STATS_AUTO_COMMIT))
     # Setup for a git repository
     ifeq (TRUE,$(BUILD_STATS_COMMIT_GIT))
 	BUILD_STATS_AUTO_COMMIT += \
-	    git commit $(BUILD_STATS) -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&-;
+	    git commit $(BUILD_STATS) -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&- || true;
     endif
 
     # Do as above for other repos. Each shell statement must be WELL TERMINATED

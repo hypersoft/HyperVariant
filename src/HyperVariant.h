@@ -73,11 +73,8 @@ typedef enum eHyperVariantType {
 #define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))
 
 #ifndef HyperVariant_c
-	#define HyperVariantLinkage extern
-	typedef void * HyperVariant;
-	HyperVariant varcreate(size_t length, double data, HyperVariantType type);
+typedef void * HyperVariant;
+extern HyperVariant varcreate(size_t length, double data, HyperVariantType type);
 #endif
-
-#undef HyperVariantLinkage
 
 #endif

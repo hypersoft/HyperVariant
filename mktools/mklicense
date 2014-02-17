@@ -1,0 +1,23 @@
+#!/bin/sh
+
+INPUT=`dirname $0`/../LICENSE;
+
+[ -e "$INPUT" ] || {
+	echo Cannot generate license document, license not found >&2;
+	exit 1;
+}
+
+if [ "$1" == 'c' ]; then
+	printf "/*\n\n`date`\n\n%s\n\n*/\n\n" "$(cat $INPUT)";
+	exit 0;
+fi;
+
+if [ "$1" == 'sh' ] || [ "$1" == bash ] || [ "$1" == dash ]; then
+	printf "#!%s\n#\n# `date`\n#\n" "$(set -- `type -p $1`; echo -n ${@:$#})";
+	cat $INPUT | sed -re 's/^/# /g'; printf '\n\n';
+	exit 0;
+fi;
+
+echo Unrecognizd source code profile; expected c, sh, bash or dash >&2;
+exit 1;
+

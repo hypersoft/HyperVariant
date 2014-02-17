@@ -102,6 +102,10 @@ demo: $(BUILD_DEMO)
 library: $(BUILD_LIBRARY)
 archive: $(BUILD_ARCHIVE)
 
+clean:
+	@$(RM) -v $(BUILD_SHARED)* $(BUILD_OBJECT) $(BUILD_ARCHIVE) $(BUILD_HEADER) \
+		$(BUILD_DEMO) $(BUILD_DEMO_OBJECT)
+
 .DEFAULT_GOAL := all
 .SUFFIXES:
 .PHONY: all clean archive library demo

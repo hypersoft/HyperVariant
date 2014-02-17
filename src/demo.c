@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main ( int argc, char **argv )
 {
-	variant var = varcreate(dblVal(17));
+	HyperVariant var = varcreate(dblVal(17));
 	printf ("%i\n", varsize(var));
 	varfree(var);
 	return 0;

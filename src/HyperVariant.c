@@ -32,28 +32,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "HyperVariant.h"
 #undef HyperVariant_c
 
-typedef struct hash_table_variant_s {
-	void * private; VariantType type;
+typedef struct sHyperVariant {
+	void * private; size_t type;
 	size_t size; size_t length;
 	char data[];
 } HyperVariant;
 
-void * varcreate(size_t length, double data, VariantType type)
+
+void * varcreate(size_t length, double data, HyperVariantType type)
 {
 	HyperVariant * var; void * ptr = ptrVar(data);
-	if (type & VT_UTF8) {
+	if (type & HVT_UTF8) {
 		if (length == 0 && ptr) length = strlen(ptr); length++;
 	}
 	var = malloc(sizeof(HyperVariant) + length);
-	if (type & VT_UTF8)  var->data[length--] = 0;
+	if (type & HVT_UTF8)  var->data[length--] = 0;
 	if (var) { var->type = type, var->length = 1;
-		if (type & VT_POINTER || type & VT_INT) {
+		if (type & HVT_POINTER || type & HVT_INT) {
 			var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
-		} else if (type & VT_DOUBLE) {
+		} else if (type & HVT_DOUBLE) {
 			var->size = sizeof(double),	dblPtrVal(var->data) = data;
-		} else if (type & VT_UTF8) {
+		} else if (type & HVT_UTF8) {
 			var->size = 1; memcpy(var->data, ptr, (var->length = length));
-		} else if (type & VT_BLOCK) {
+		} else if (type & HVT_BLOCK) {
 			memcpy(var->data, ptr, (var->size = length));
 		}
 	}

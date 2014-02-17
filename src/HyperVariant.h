@@ -29,7 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 17b1e113d989d1865b311c4deb8ca31a5f52f75e
 #ifndef HyperVariant_h
 #define HyperVariant_h
 
@@ -81,4 +84,7 @@ extern HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 #endif
 
 #endif
+<<<<<<< HEAD
 >>>>>>> 78fde29... Show up and show out
+=======
+>>>>>>> 17b1e113d989d1865b311c4deb8ca31a5f52f75e

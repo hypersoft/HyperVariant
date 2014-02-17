@@ -24,6 +24,6 @@ if [ "$1" == 'mk' ] || [ "$1" == Makefile ]; then
 	exit 0;
 fi;
 
-echo Unrecognizd source code profile; expected c, sh, bash or dash >&2;
+echo Unrecognizd source code profile; expected c, sh, bash, dash, mk or Makefile >&2;
 exit 1;
 

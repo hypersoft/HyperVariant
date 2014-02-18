@@ -3,3 +3,4 @@ HyperVariant.a
 HyperVariant.h
 libhypervar.*
 bin
+/nbproject/

@@ -42,9 +42,11 @@ BUILD_OBJECT = $(BUILD_BIN)/HyperVariant.o
 BUILD_ARCHIVE = $(BUILD_OUTPUT)/HyperVariant.a
 BUILD_HEADER = $(BUILD_OUTPUT)/HyperVariant.h
 
-BUILD_SHARED = $(BUILD_OUTPUT)/libhypervar
-BUILD_LIBRARY = $(BUILD_SHARED).so.$(BUILD_TRIPLET)
-BUILD_LIBFLAGS = -export-dynamic -shared -soname $(BUILD_SHARED).so.$(BUILD_MAJOR)
+BUILD_LIBRARY_NAME = libHyperVariant
+BUILD_SHARED = $(BUILD_OUTPUT)/$(BUILD_LIBRARY_NAME)
+BUILD_LIBRARY = $(BUILD_SHARED).$(BUILD_TRIPLET).so
+BUILD_LIBRARY_FLAGS = -export-dynamic -shared -soname \
+$(BUILD_LIBRARY_NAME).so.$(BUILD_MAJOR)
 
 BUILD_DEMO = $(BUILD_BIN)/demo
 BUILD_DEMO_SRC = $(BUILD_SRC)/demo.c
@@ -69,11 +71,20 @@ BUILD_FLAGS += \
 SYSTEM_LIBDIR := /usr/local/lib
 SYSTEM_INCDIR := /usr/local/include
 
-BUILD_SOURCE_ARCHIVE = $(BUILD_OUTPUT)/$(BUILD_NAME)-$(BUILD_TRIPLET).tar.gz
+BUILD_SOURCE_TRIPLET = \
+	$(word 1, $(MAKESTATS)).$(word 2, $(MAKESTATS)).$(word 3, $(MAKESTATS))
+
+BUILD_SOURCE_ARCHIVE = \
+$(BUILD_OUTPUT)/$(BUILD_NAME)-$(BUILD_SOURCE_TRIPLET).tar.gz
 
 BUILD_SOURCE_ARCHIVE_FILES = \
-	mktools/MakeStats.mk src/HyperVariant.c src/HyperVariant.h LICENSE Makefile \
-	project.ver README.md
+$(BUILD_HOME)/LICENSE \
+$(BUILD_HOME)/README.md \
+$(BUILD_HOME)/Makefile \
+$(BUILD_HOME)/project.ver \
+$(BUILD_TOOLS)/MakeStats.mk \
+$(BUILD_SRC)/HyperVariant.c \
+$(BUILD_SRC)/HyperVariant.h \
 
 all: $(BUILD_BIN) $(BUILD_OUTPUT) archive library demo
 
@@ -96,7 +107,7 @@ $(BUILD_ARCHIVE): $(BUILD_OBJECT) $(BUILD_HEADER)
 $(BUILD_LIBRARY): $(BUILD_OBJECT)
 	@$(make-build-number)
 	@echo -e 'Building $(BUILD_NAME) $(BUILD_TRIPLET) library...\n'
-	ld $(BUILD_LIBFLAGS) -o $@ $<
+	ld $(BUILD_LIBRARY_FLAGS) -o $@ $<
 	@echo
 
 $(BUILD_DEMO_OBJECT): $(BUILD_DEMO_SRC)
@@ -122,7 +133,7 @@ $(BUILD_SOURCE_ARCHIVE): $(BUILD_SOURCE_ARCHIVE_FILES)
 	@echo
 
 clean:
-	@$(RM) -v $(BUILD_SHARED)* $(BUILD_OBJECT) $(BUILD_ARCHIVE) $(BUILD_HEADER) \
+	@$(RM) -v $(BUILD_LIBRARY)*.so $(BUILD_OBJECT) $(BUILD_ARCHIVE) $(BUILD_HEADER) \
 		$(BUILD_DEMO) $(BUILD_DEMO_OBJECT) $(BUILD_OUTPUT)/$(BUILD_NAME)*.tar.gz
 
 .DEFAULT_GOAL := all

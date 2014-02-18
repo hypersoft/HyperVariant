@@ -38,9 +38,10 @@ int main ( int argc, char **argv )
 
 	puts("Testing immediate string data (Hello World!)...");
 	printf("Length: %i; value: %s\n", varlen(var), var);
+	printf("string impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
-
+/*
 	printf("\n");
 
 	var = varcreate(strVal(argv[0], 0));
@@ -66,12 +67,13 @@ int main ( int argc, char **argv )
 	varprvt(var) = argv[0];
 	if (varprvt(var) != argv[0]) puts("uhhh.. private data doesn't match up..");
 	else puts("Good to go..");
+	printf("double impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
 
-	
 	printf("\nI'd say she's in good working order captain...\n\n");
 
+*/
 
 	return 0;
 }

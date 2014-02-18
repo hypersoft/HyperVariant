@@ -73,6 +73,11 @@ typedef enum eHyperVariantType {
 #define varlen(v) intPtrVal(v - sizeof(size_t))
 #define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))
 
+#define varimpact(v) ( \
+	((sizeof(size_t) << 2) + ((size_t)varlen(v) * (size_t)varsize(v))) \
+	+ ((vartype(var) & HVT_UTF8) ? 1 : 0) \
+)
+
 typedef void * HyperVariant;
 
 #ifndef HyperVariant_c

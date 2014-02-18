@@ -103,7 +103,7 @@ endif
 # USER may not contain spaces
 
 # You can set this variable in YOUR makefile/command-line if need be.
-BUILD_STATS ?= project.ver
+BUILD_STATS ?= $(BUILD_HOME)/project.ver
 
 ifeq (TRUE, $(BUILD_STATS_AUTO_COMMIT))
 
@@ -127,8 +127,8 @@ ifeq (TRUE, $(BUILD_STATS_AUTO_COMMIT))
 
     # Setup for a git repository
     ifeq (TRUE,$(BUILD_STATS_COMMIT_GIT))
-	BUILD_STATS_AUTO_COMMIT += \
-	    git commit $(BUILD_STATS) -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&- || true;
+	BUILD_STATS_AUTO_COMMIT += git commit $(BUILD_STATS) \
+	    -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&- || true;
     endif
 
     # Do as above for other repos. Each shell statement must be WELL TERMINATED

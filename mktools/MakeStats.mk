@@ -183,17 +183,23 @@ endif
 
 MAKESTATS != cat $(BUILD_STATS)
 
+BUILD_UPDATES:=$(strip $(foreach file,$(BUILD_VERSION_SOURCES), \
+	$(shell test $(file) -nt $(BUILD_STATS) && echo $(file))))
+
+ifeq (,$(BUILD_UPDATES))
+    BUILD_REVISION_STEP = 0
+else
+    BUILD_REVISION_STEP ?= 1
+endif
+
 BUILD_MAJOR = $(word 1, $(MAKESTATS))
 BUILD_MINOR = $(word 2, $(MAKESTATS))
-BUILD_REVISION != expr $(word 3, $(MAKESTATS)) + 1
+BUILD_REVISION != expr $(word 3, $(MAKESTATS)) + $(BUILD_REVISION_STEP)
 BUILD_NUMBER != expr $(word 4, $(MAKESTATS)) + 1
 BUILD_DATE != date +%s
 BUILD_USER  ?= $(USER)
 BUILD_NAME = $(wordlist 7, $(words $(MAKESTATS)), $(MAKESTATS))
 BUILD_TRIPLET = $(BUILD_MAJOR).$(BUILD_MINOR).$(BUILD_REVISION)
-
-BUILD_UPDATES:=$(strip $(foreach file,$(BUILD_VERSION_SOURCES), \
-	$(shell test $(file) -nt $(BUILD_STATS) && echo $(file))))
 
 # Update revision, date, and user if sources are newer than stats
 make-build-revision = \

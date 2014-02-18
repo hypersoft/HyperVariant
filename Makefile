@@ -27,11 +27,16 @@
 
 BUILD_VENDOR = Hypersoft Systems
 
+BUILD_HOME ?= .
+BUILD_SRC = $(BUILD_HOME)/src
+BUILD_PKG = $(BUILD_HOME)/pkg
+BUILD_TOOLS = $(BUILD_HOME)/mktools
+
 BUILD_OUTPUT ?= .
 BUILD_BIN ?= bin
-BUILD_SOURCE ?= src
+BUILD_SRC ?= src
 
-BUILD_VERSION_SOURCES = $(BUILD_SOURCE)/HyperVariant.c $(BUILD_SOURCE)/HyperVariant.h
+BUILD_VERSION_SOURCES = $(BUILD_SRC)/HyperVariant.c $(BUILD_SRC)/HyperVariant.h
 
 BUILD_OBJECT = $(BUILD_BIN)/HyperVariant.o
 BUILD_ARCHIVE = $(BUILD_OUTPUT)/HyperVariant.a
@@ -42,7 +47,7 @@ BUILD_LIBRARY = $(BUILD_SHARED).so.$(BUILD_TRIPLET)
 BUILD_LIBFLAGS = -export-dynamic -shared -soname $(BUILD_SHARED).so.$(BUILD_MAJOR)
 
 BUILD_DEMO = $(BUILD_BIN)/demo
-BUILD_DEMO_SRC = $(BUILD_SOURCE)/demo.c
+BUILD_DEMO_SRC = $(BUILD_SRC)/demo.c
 BUILD_DEMO_OBJECT = $(BUILD_BIN)/demo.o
 
 # disable MakeStats notice
@@ -52,17 +57,23 @@ BUILD_STATS_NOTICE = FALSE
 BUILD_STATS_AUTO_COMMIT ?= TRUE
 
 # include MakeStats
-include $(BUILD_SOURCE)/../mktools/MakeStats.mk
+include $(BUILD_TOOLS)/MakeStats.mk
 
 BUILD_FLAGS += \
--DHV_VERSION_VENDOR='"$(BUILD_VENDOR)"' \
--DHV_VERSION_TRIPLET='"$(BUILD_TRIPLET)"' \
--DHV_VERSION_DESCRIPTION='"$(BUILD_VENDOR) $(BUILD_NAME) $(BUILD_TRIPLET)"' \
--DHV_VERSION_BUILDNO=$(BUILD_NUMBER)
+-DBUILD_VERSION_VENDOR='"$(BUILD_VENDOR)"' \
+-DBUILD_VERSION_TRIPLET='"$(BUILD_TRIPLET)"' \
+-DBUILD_VERSION_DESCRIPTION='"$(BUILD_VENDOR) $(BUILD_NAME) $(BUILD_TRIPLET)"' \
+-DBUILD_VERSION_NUMBER=$(BUILD_NUMBER)
 
 # System Install Paths for lib & header
 SYSTEM_LIBDIR := /usr/local/lib
 SYSTEM_INCDIR := /usr/local/include
+
+BUILD_SOURCE_ARCHIVE = $(BUILD_OUTPUT)/$(BUILD_NAME)-$(BUILD_TRIPLET).tar.gz
+
+BUILD_SOURCE_ARCHIVE_FILES = \
+	mktools/MakeStats.mk src/HyperVariant.c src/HyperVariant.h LICENSE Makefile \
+	project.ver README.md
 
 all: $(BUILD_BIN) $(BUILD_OUTPUT) archive library demo
 
@@ -73,7 +84,7 @@ $(BUILD_OBJECT): $(BUILD_VERSION_SOURCES)
 	@$(make-build-revision)
 	@echo
 
-$(BUILD_HEADER): $(BUILD_SOURCE)/HyperVariant.h
+$(BUILD_HEADER): $(BUILD_SRC)/HyperVariant.h
 	@cp $< $@
 
 $(BUILD_ARCHIVE): $(BUILD_OBJECT) $(BUILD_HEADER)
@@ -103,11 +114,17 @@ $(BUILD_BIN) $(BUILD_OUTPUT):
 demo: $(BUILD_DEMO)
 library: $(BUILD_LIBRARY)
 archive: $(BUILD_ARCHIVE)
+source-archive: $(BUILD_SOURCE_ARCHIVE)
+
+$(BUILD_SOURCE_ARCHIVE): $(BUILD_SOURCE_ARCHIVE_FILES)
+	@echo -e 'Building $@...\n'
+	@tar -cvzf $@ $^
+	@echo
 
 clean:
 	@$(RM) -v $(BUILD_SHARED)* $(BUILD_OBJECT) $(BUILD_ARCHIVE) $(BUILD_HEADER) \
-		$(BUILD_DEMO) $(BUILD_DEMO_OBJECT)
+		$(BUILD_DEMO) $(BUILD_DEMO_OBJECT) $(BUILD_OUTPUT)/$(BUILD_NAME)*.tar.gz
 
 .DEFAULT_GOAL := all
 .SUFFIXES:
-.PHONY: all clean archive library demo
+.PHONY: all clean archive library demo source-archive

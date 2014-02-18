@@ -1,6 +1,5 @@
-
-HyperVariant.a
-HyperVariant.h
-libhypervar.*
-bin
+/HyperVariant.a
+/HyperVariant.h
+/libhypervariant.*.so
+/bin
 /nbproject/

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stddef.h>
 #include <string.h>
 #include <wchar.h>
+#include <inttypes.h>
 
 typedef enum eHyperVariantType {
 	HVT_INT = 1 << 1,

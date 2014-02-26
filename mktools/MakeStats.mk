@@ -105,9 +105,9 @@ endif
 # You can set this variable in YOUR makefile/command-line if need be.
 BUILD_STATS ?= $(BUILD_HOME)/project.ver
 
-ifeq (TRUE, $(BUILD_STATS_AUTO_COMMIT))
+ifdef BUILD_STATS_AUTO_COMMIT
 
-    BUILD_STATS_AUTO_COMMIT=
+    BUILD_STATS_AUTO_REPO_COMMIT =
 
     BUILD_STATS_COMMIT_MESSAGE = "` \
     echo "$(BUILD_NAME) Version $(BUILD_TRIPLET); Build $(BUILD_NUMBER)"; \
@@ -126,21 +126,26 @@ ifeq (TRUE, $(BUILD_STATS_AUTO_COMMIT))
     >&- 2>&- && echo TRUE
 
     # Setup for a git repository
-    ifeq (TRUE,$(BUILD_STATS_COMMIT_GIT))
-	BUILD_STATS_AUTO_COMMIT += git commit $(BUILD_STATS) \
-	    -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&- || true;
+    ifeq (TRUE, $(BUILD_STATS_COMMIT_GIT))
+	ifeq (commit, $(BUILD_STATS_AUTO_COMMIT))
+	    BUILD_STATS_AUTO_REPO_COMMIT += git commit $(BUILD_STATS) \
+	        -m $(BUILD_STATS_COMMIT_MESSAGE) >&- 2>&- || true;
+	else ifeq (add, $(BUILD_STATS_AUTO_COMMIT))
+	    BUILD_STATS_AUTO_REPO_COMMIT += git add $(BUILD_STATS) \
+		>&- 2>&- || true;
+	endif
     endif
 
     # Do as above for other repos. Each shell statement must be WELL TERMINATED
 
     # Nobody told me how to execute this directive...
-    ifeq (,$(BUILD_STATS_AUTO_COMMIT))
+    ifeq (,$(BUILD_STATS_AUTO_REPO_COMMIT))
 	void := $(info No command to commit MakeStats changes found)
-	BUILD_STATS_AUTO_COMMIT = true;
+	BUILD_STATS_AUTO_REPO_COMMIT = true;
     endif
 
 else
-    BUILD_STATS_AUTO_COMMIT = true;
+    BUILD_STATS_AUTO_REPO_COMMIT = true;
 endif
 
 ifeq (, $(BUILD_STATS))
@@ -207,7 +212,7 @@ sh -c ' \
     if [ -n "$(BUILD_UPDATES)" ] && [ "$(BUILD_REVISION)" != "$$3" ]; then \
 	echo $$1 $$2 $(BUILD_REVISION) $(BUILD_NUMBER) $(BUILD_DATE) \
 	    "$(BUILD_USER)" "$${@:7}" > $(BUILD_STATS); \
-	$(BUILD_STATS_AUTO_COMMIT) \
+	$(BUILD_STATS_AUTO_REPO_COMMIT) \
     fi; echo -n;' -- \
 `cat $(BUILD_STATS)`
 
@@ -227,9 +232,9 @@ build-stats:
 	    "  Build Version: $$1.$$2.$$3" \
 	    "   Build Number: $$4" \
 	    "     Build Date: `date --date=@$$5`" \
-	    "     Build Name: $${@:7}" \
+	    "     Build Name: `echo -n $${@:7}`" \
 	);
-	@$(BUILD_STATS_AUTO_COMMIT)
+	@$(BUILD_STATS_AUTO_REPO_COMMIT)
 	@echo
 
 # Update build name

@@ -55,8 +55,8 @@ BUILD_DEMO_OBJECT = $(BUILD_BIN)/demo.o
 # disable MakeStats notice
 BUILD_STATS_NOTICE = FALSE
 
-# enable MakeStats auto commit; Warning noisy commit history!
-BUILD_STATS_AUTO_COMMIT ?= TRUE
+# enable MakeStats auto commit;
+BUILD_STATS_AUTO_COMMIT ?= add
 
 # include MakeStats
 include $(BUILD_TOOLS)/MakeStats.mk

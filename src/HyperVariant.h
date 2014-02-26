@@ -70,12 +70,12 @@ typedef enum eHyperVariantType {
 #define varfree(v) free(intPtr(v - ((sizeof(size_t) << 1) << 1))); v = NULL
 #define varprvt(v) ptrPtrVal(v - ((sizeof(size_t) << 1) << 1))
 #define varprvti(v) intPtrVal(v - ((sizeof(size_t) << 1) << 1))
-#define varsize(v) intPtrVal(v - (sizeof(size_t) << 1))
+#define varhits(v) intPtrVal(v - (sizeof(size_t) << 1))
 #define varlen(v) intPtrVal(v - sizeof(size_t))
 #define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))
 
 #define varimpact(v) ( \
-	((sizeof(size_t) << 2) + ((size_t)varlen(v) * (size_t)varsize(v))) \
+	((sizeof(size_t) << 2) + ((size_t)varlen(v))) \
 	+ ((vartype(v) & HVT_UTF8) ? 1 : 0) \
 )
 

@@ -54,7 +54,7 @@ int main ( int argc, char **argv )
 
 	var = varcreate(intVal(255));
 	puts("Testing integer data (255)...");
-	printf("Size: %i; value: %i\n", varsize(var), intPtrVal(var));
+	printf("Value: %i\n", intPtrVal(var));
 	puts("cleaning up...");
 	varfree(var);
 
@@ -62,7 +62,7 @@ int main ( int argc, char **argv )
 
 	var = varcreate(dblVal(1234.5678));
 	puts("Testing integer data (1234.5678)...");
-	printf("Size: %i; value: %.8g\n", varsize(var), dblPtrVal(var));
+	printf("Value: %.8g\n", dblPtrVal(var));
 	puts("While we have a variant, test the private data...");
 	varprvt(var) = argv[0];
 	if (varprvt(var) != argv[0]) puts("uhhh.. private data doesn't match up..");

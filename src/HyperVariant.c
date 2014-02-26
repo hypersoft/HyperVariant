@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct sHyperVariant {
 	void * private; size_t type;
-	size_t size; size_t length;
+	size_t hitCount; size_t length;
 	char data[];
 } iHyperVariant;
 
@@ -44,15 +44,15 @@ HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 	if (type & HVT_UTF8) { if (length == 0 && ptr) length = strlen(ptr); length++; }
 	var = malloc(sizeof(iHyperVariant) + length);
 	if (var) { var->private = 0, var->type = type;
-		if (type & HVT_UTF8) var->data[--length] = 0, var->size = 1,
-			memcpy(var->data, ptr, (var->length = length));
+		if (type & HVT_UTF8) var->data[--length] = 0, var->length = length,
+			memcpy(var->data, ptr, length);
 		else { var->type = type, var->length = 1;
 			if (type & HVT_POINTER || type & HVT_INT)
-				var->size = sizeof(uint), ptrPtrVal(var->data) = ptr;
+				ptrPtrVal(var->data) = ptr, var->length = sizeof(size_t);
 			else if (type & HVT_DOUBLE)
-				var->size = sizeof(double),	dblPtrVal(var->data) = data;
+				dblPtrVal(var->data) = data, var->length = sizeof(double);
 			else if (type & HVT_BLOCK)
-				memcpy(var->data, ptr, (var->size = length));
+				memcpy(var->data, ptr,  length), var->length = length;
 		} return var->data;
 	} return NULL;
 }

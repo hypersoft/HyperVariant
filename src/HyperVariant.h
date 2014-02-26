@@ -34,13 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <wchar.h>
 
 typedef enum eHyperVariantType {
 	HVT_INT = 1 << 1,
 	HVT_DOUBLE = 1 << 2,
 	HVT_POINTER = 1 << 3,
 	HVT_UTF8 = 1 << 4,
-	HVT_BLOCK = 1 << 5,
+	HVT_UCS1 = HVT_UTF8,
+	HVT_UCS2 = 1 << 5,
+	HVT_UCS4 = 1 << 6,
+	HVT_BLOCK = 1 << 7
 } HyperVariantType;
 
 #define ptrVar(d) ((void*)(uint)(d))

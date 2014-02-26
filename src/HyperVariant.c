@@ -42,8 +42,12 @@ HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 {
 	iHyperVariant * var; void * ptr = ptrVar(data);
 	if (type & HVT_UTF8) { if (length == 0 && ptr) length = strlen(ptr); length++; }
-	if (type & HVT_UCS4) {
-		if (length == 0) length = wcslen(ptr) * sizeof(size_t);
+	else if (type & HVT_UCS2) {
+		if (length == 0) length = wcslen(ptr) * sizeof(uint16_t);
+		else length *= sizeof(uint16_t);
+		length+=sizeof(uint16_t);
+	} else if (type & HVT_UCS4) {
+		if (length == 0) length = wcslen(ptr) * sizeof(wchar_t);
 		else length *= sizeof(wchar_t);
 		length+=sizeof(wchar_t);
 	}
@@ -58,6 +62,12 @@ HyperVariant varcreate(size_t length, double data, HyperVariantType type)
 				dblPtrVal(var->data) = data, var->length = sizeof(double);
 			else if (type & HVT_BLOCK)
 				memcpy(var->data, ptr,  length), var->length = length;
+			else if (type & HVT_UCS2) {
+				uint16_t * s = (uint16_t *) var->data;
+				*(s + (length -= sizeof(uint16_t))) = 0,
+				var->length = length,
+				memcpy(var->data, ptr,  length), var->length = length;
+			}
 			else if (type & HVT_UCS4) {
 				wchar_t * s = (wchar_t *) var->data;
 				*(s + (length -= sizeof(size_t))) = 0,

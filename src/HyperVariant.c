@@ -58,7 +58,7 @@ HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 		var->note = 0, var->private = 0, var->type = type, var->bytes = bytes;
 		if (type & HVT_UTF8) var->data[--bytes] = 0,
 			memcpy(var->data, ptr, bytes);
-		else if (type & HVT_POINTER || type & HVT_LONG)	varptr(var->data) = ptr;
+		else if (type & HVT_POINTER || type & HVT_NUMBER)	varptr(var->data) = ptr;
 		else if (type & HVT_DOUBLE)	vardouble(var->data) = data;
 		else if (type & HVT_BLOCK) memcpy(var->data, ptr,  bytes);
 		else if (type & HVT_UTF16) {

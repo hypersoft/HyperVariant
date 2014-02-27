@@ -53,9 +53,9 @@ int main ( int argc, char **argv )
 
 	printf("\n");
 
-	var = varcreate(lngvar(255));
+	var = varcreate(numvar(255));
 	puts("Testing integer data (255)...");
-	printf("Length: %i; Value: %i\n", varlen(var), varlong(var));
+	printf("Length: %i; Value: %i\n", varlen(var), varnum(var));
 	printf("Total Impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);

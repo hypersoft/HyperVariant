@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <inttypes.h>
 
 typedef enum eHyperVariantType {
-	HVT_LONG = 1 << 1,
+	HVT_NUMBER = 1 << 1,
 	HVT_DOUBLE = 1 << 2,
 	HVT_POINTER = 1 << 3,
 	HVT_BLOCK = 1 << 4,
@@ -53,16 +53,16 @@ typedef enum eHyperVariantType {
 #define ptrval(d) ((void*)(size_t)(d))
 #define dblval(i) ((double)(size_t)(i))
 
-#define lngvar(i) sizeof(size_t), dblval(i), HVT_LONG
+#define numvar(i) sizeof(size_t), dblval(i), HVT_NUMBER
 #define ptrvar(p) sizeof(void *), dblval(p), HVT_POINTER
 #define dblvar(d) sizeof(double), d, HVT_DOUBLE
 #define utf8var(s, l) l, dblval(s), HVT_UTF8
 #define blkvar(b, s) s, dblval((void*)b), HVT_BLOCK
 
 #define vardouble(v) *(double*)(v)
-#define varlong(v) *(long*)(v)
+#define varnum(v) *(size_t*)(v)
 #define varptr(v) *(void**)(v)
-#define varindexof(type, variant, index) *varop( +, type, variant, index)
+#define varidx(type, variant, index) *varop( +, type, variant, index)
 
 #define varhead(v) (v - (sizeof(size_t) << 2))
 

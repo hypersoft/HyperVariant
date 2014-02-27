@@ -38,20 +38,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <inttypes.h>
 
 typedef enum eHyperVariantType {
-	HVT_INT = 1 << 1,
+	HVT_LONG = 1 << 1,
 	HVT_DOUBLE = 1 << 2,
 	HVT_POINTER = 1 << 3,
-	HVT_UTF8 = 1 << 4,
-	HVT_UCS1 = HVT_UTF8,
-	HVT_UCS2 = 1 << 5,
-	HVT_UCS4 = 1 << 6,
-	HVT_BLOCK = 1 << 7
+	HVT_BLOCK = 1 << 4,
+	HVT_UTF8 = 1 << 5, HVT_UCS1 = HVT_UTF8,
+	HVT_UTF16 = 1 << 6,	HVT_UCS2 = HVT_UTF16,
+	HVT_UTF32 = 1 << 7, HVT_UCS4 = HVT_UTF32,
 } HyperVariantType;
 
-#define ptrVar(d) ((void*)(uint)(d))
-#define dblInt(i) ((double)(uint)(i))
+#define ptrVar(d) ((void*)(size_t)(d))
+#define dblInt(i) ((double)(size_t)(i))
 
-#define intVal(i) sizeof(uint), dblInt(i), HVT_INT
+#define intVal(i) sizeof(size_t), dblInt(i), HVT_LONG
 #define ptrVal(p) sizeof(void *), dblInt(p), HVT_POINTER
 #define dblVal(d) sizeof(double), d, HVT_DOUBLE
 
@@ -60,7 +59,7 @@ typedef enum eHyperVariantType {
 
 #define blkPtr(t, p) ((t*)(p))
 
-#define intPtr(p) blkPtr(uint, p)
+#define intPtr(p) blkPtr(size_t, p)
 #define intPtrVal(p) *intPtr(p)
 
 #define ptrPtr(p) blkPtr(void*, p)
@@ -72,22 +71,27 @@ typedef enum eHyperVariantType {
 #define strPtr(p) blkPtr(char, p)
 #define strPtrVal *strPtr(p)
 
-#define varfree(v) free(intPtr(v - ((sizeof(size_t) << 1) << 1))); v = NULL
-#define varprvt(v) ptrPtrVal(v - ((sizeof(size_t) << 1) << 1))
-#define varprvti(v) intPtrVal(v - ((sizeof(size_t) << 1) << 1))
-#define varhits(v) intPtrVal(v - (sizeof(size_t) << 1))
-#define varlen(v) intPtrVal(v - sizeof(size_t))
-#define vartype(v) intPtrVal(v - (sizeof(size_t) | (sizeof(size_t) << 1)))
+#define varfree(v) free(intPtr(v - (sizeof(size_t) << 2))); v = NULL
+#define varprvt(v) ptrPtrVal(v - (sizeof(size_t) << 2))
+#define varprvti(v) intPtrVal(v - (sizeof(size_t) << 2))
+#define varnote(v) intPtrVal(v - (sizeof(size_t) << 1))
+#define varbytes(v) intPtrVal(v - sizeof(size_t))
+#define vartype(v) intPtrVal(v - ((sizeof(size_t) << 1) + sizeof(size_t)))
+#define varpadding(v) ((vartype(v) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
+#define varlen(v) (varbytes(v) - varpadding(v))
 
-#define varimpact(v) ( \
-	((sizeof(size_t) << 2) + ((size_t)varlen(v))) \
-	+ ((vartype(v) & HVT_UTF8) ? 1 : 0) \
-)
+#define varimpact(v)                                                           \
+((v) ? (sizeof(size_t) << 2) + varbytes(v) : 0L)
 
 typedef void * HyperVariant;
 
 #ifndef HyperVariant_c
-extern HyperVariant varcreate(size_t length, double data, HyperVariantType type);
+extern HyperVariant varcreate
+(
+	size_t bytes,
+	double data,
+	HyperVariantType type
+);
 #endif
 
 #endif

@@ -41,12 +41,13 @@ int main ( int argc, char **argv )
 	printf("string impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
-/*
+
 	printf("\n");
 
 	var = varcreate(strVal(argv[0], 0));
 	puts("Testing static string data (argv[0])...");
-	printf("Length: %i; value: %s\n", varlen(var), var);
+	printf("Length: %i; Value: %s\n", varlen(var), var);
+	printf("Total Impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
 
@@ -54,26 +55,25 @@ int main ( int argc, char **argv )
 
 	var = varcreate(intVal(255));
 	puts("Testing integer data (255)...");
-	printf("Value: %i\n", intPtrVal(var));
+	printf("Length: %i; Value: %i\n", varlen(var), intPtrVal(var));
+	printf("Total Impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
 
 	printf("\n");
 
 	var = varcreate(dblVal(1234.5678));
-	puts("Testing integer data (1234.5678)...");
-	printf("Value: %.8g\n", dblPtrVal(var));
+	puts("Testing double data (1234.5678)...");
+	printf("Length: %i; Value: %.8g\n", varlen(var), dblPtrVal(var));
+	printf("Total Impact: %i\n", varimpact(var));
 	puts("While we have a variant, test the private data...");
 	varprvt(var) = argv[0];
 	if (varprvt(var) != argv[0]) puts("uhhh.. private data doesn't match up..");
 	else puts("Good to go..");
-	printf("double impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
 
 	printf("\nI'd say she's in good working order captain...\n\n");
-
-*/
 
 	return 0;
 }

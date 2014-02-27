@@ -34,47 +34,47 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct sHyperVariant {
 	void * private; size_t type;
-	size_t hitCount; size_t length;
+	size_t note; size_t bytes;
 	char data[];
 } iHyperVariant;
 
-HyperVariant varcreate(size_t length, double data, HyperVariantType type)
+HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 {
 	iHyperVariant * var; void * ptr = ptrVar(data);
-	if (type & HVT_UTF8) { if (length == 0 && ptr) length = strlen(ptr); length++; }
-	else if (type & HVT_UCS2) {
-		if (length == 0) length = wcslen(ptr) * sizeof(uint16_t);
-		else length *= sizeof(uint16_t);
-		length+=sizeof(uint16_t);
-	} else if (type & HVT_UCS4) {
-		if (length == 0) length = wcslen(ptr) * sizeof(wchar_t);
-		else length *= sizeof(wchar_t);
-		length+=sizeof(wchar_t);
+	if (type & (HVT_UTF8)) {
+		if (bytes == 0) bytes = strlen(ptr);
+		bytes++;
+	} else
+	if (type & HVT_UTF16) {
+		if (bytes == 0) bytes = strlen(ptr);
+		bytes += sizeof(uint16_t);
+	} else
+	if (type & HVT_UTF32) {
+		if (bytes == 0) bytes = (wcslen(ptr)*sizeof(wchar_t)) + sizeof(wchar_t);
+		else bytes += sizeof(wchar_t);
 	}
-	var = malloc(sizeof(iHyperVariant) + length);
-	if (var) { var->private = 0, var->type = type;
-		if (type & HVT_UTF8) var->data[--length] = 0, var->length = length,
-			memcpy(var->data, ptr, length);
-		else { var->type = type, var->length = 1;
-			if (type & HVT_POINTER || type & HVT_INT)
-				ptrPtrVal(var->data) = ptr, var->length = sizeof(size_t);
-			else if (type & HVT_DOUBLE)
-				dblPtrVal(var->data) = data, var->length = sizeof(double);
-			else if (type & HVT_BLOCK)
-				memcpy(var->data, ptr,  length), var->length = length;
-			else if (type & HVT_UCS2) {
-				uint16_t * s = (uint16_t *) var->data;
-				*(s + (length -= sizeof(uint16_t))) = 0,
-				var->length = length,
-				memcpy(var->data, ptr,  length), var->length = length;
-			}
-			else if (type & HVT_UCS4) {
-				wchar_t * s = (wchar_t *) var->data;
-				*(s + (length -= sizeof(size_t))) = 0,
-				var->length = length,
-				memcpy(var->data, ptr,  length), var->length = length;
-			}
-		} return var->data;
+	var = malloc(sizeof(iHyperVariant) + bytes);
+	if (var) {
+		var->note = 0, var->private = 0, var->type = type, var->bytes = bytes;
+		if (type & HVT_UTF8) var->data[--bytes] = 0,
+			memcpy(var->data, ptr, bytes);
+		else if (type & HVT_POINTER || type & HVT_LONG)
+			ptrPtrVal(var->data) = ptr;
+		else if (type & HVT_DOUBLE)
+			dblPtrVal(var->data) = data;
+		else if (type & HVT_BLOCK)
+			memcpy(var->data, ptr,  bytes);
+		else if (type & HVT_UTF16) {
+			uint16_t * s = (uint16_t *) var->data;
+			*(s + (bytes -= sizeof(uint16_t))) = 0,
+			memcpy(var->data, ptr, bytes);
+		}
+		else if (type & HVT_UTF32) {
+			wchar_t * s = (wchar_t *) var->data;
+			*(s + (bytes -= sizeof(wchar_t))) = 0,
+			memcpy(var->data, ptr,  bytes);
+		}
+		return var->data;
 	} return NULL;
 }
 

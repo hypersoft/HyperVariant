@@ -40,7 +40,7 @@ typedef struct sHyperVariant {
 
 HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 {
-	iHyperVariant * var; void * ptr = ptrVar(data);
+	iHyperVariant * var; void * ptr = ptrval(data);
 	if (type & (HVT_UTF8)) {
 		if (bytes == 0) bytes = strlen(ptr);
 		bytes++;
@@ -58,18 +58,14 @@ HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 		var->note = 0, var->private = 0, var->type = type, var->bytes = bytes;
 		if (type & HVT_UTF8) var->data[--bytes] = 0,
 			memcpy(var->data, ptr, bytes);
-		else if (type & HVT_POINTER || type & HVT_LONG)
-			ptrPtrVal(var->data) = ptr;
-		else if (type & HVT_DOUBLE)
-			dblPtrVal(var->data) = data;
-		else if (type & HVT_BLOCK)
-			memcpy(var->data, ptr,  bytes);
+		else if (type & HVT_POINTER || type & HVT_LONG)	varptr(var->data) = ptr;
+		else if (type & HVT_DOUBLE)	vardouble(var->data) = data;
+		else if (type & HVT_BLOCK) memcpy(var->data, ptr,  bytes);
 		else if (type & HVT_UTF16) {
 			uint16_t * s = (uint16_t *) var->data;
 			*(s + (bytes -= sizeof(uint16_t))) = 0,
 			memcpy(var->data, ptr, bytes);
-		}
-		else if (type & HVT_UTF32) {
+		} else if (type & HVT_UTF32) {
 			wchar_t * s = (wchar_t *) var->data;
 			*(s + (bytes -= sizeof(wchar_t))) = 0,
 			memcpy(var->data, ptr,  bytes);

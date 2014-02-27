@@ -47,35 +47,22 @@ typedef enum eHyperVariantType {
 	HVT_UTF32 = 1 << 7, HVT_UCS4 = HVT_UTF32,
 } HyperVariantType;
 
-#define ptrVar(d) ((void*)(size_t)(d))
-#define dblInt(i) ((double)(size_t)(i))
-
-#define intVal(i) sizeof(size_t), dblInt(i), HVT_LONG
-#define ptrVal(p) sizeof(void *), dblInt(p), HVT_POINTER
-#define dblVal(d) sizeof(double), d, HVT_DOUBLE
-
-#define strVal(s, l) l, dblInt(s), HVT_UTF8
-#define blkVal(b, s) s, dblInt((void*)b), HVT_BLOCK
-
-#define blkPtr(t, p) ((t*)(p))
-
-#define intPtr(p) blkPtr(size_t, p)
-#define intPtrVal(p) *intPtr(p)
-
-#define ptrPtr(p) blkPtr(void*, p)
-#define ptrPtrVal(p) *ptrPtr(p)
-
-#define dblPtr(p) blkPtr(double, p)
-#define dblPtrVal(p) *dblPtr(p)
-
-#define strPtr(p) blkPtr(char, p)
-#define strPtrVal *strPtr(p)
-
 #define varop(op, type, variant, index) \
-	(type*)(variant op (index) ? (index * sizeof(type)) : 0)
+	(type*)(variant op (index * sizeof(type)))
 
-#define varprev(type, variant, index) varop( -, type, variant, index)
-#define varindex(type, variant, index) varop( +, type, variant, index)
+#define ptrval(d) ((void*)(size_t)(d))
+#define dblval(i) ((double)(size_t)(i))
+
+#define lngvar(i) sizeof(size_t), dblval(i), HVT_LONG
+#define ptrvar(p) sizeof(void *), dblval(p), HVT_POINTER
+#define dblvar(d) sizeof(double), d, HVT_DOUBLE
+#define utf8var(s, l) l, dblval(s), HVT_UTF8
+#define blkvar(b, s) s, dblval((void*)b), HVT_BLOCK
+
+#define vardouble(v) *(double*)(v)
+#define varlong(v) *(long*)(v)
+#define varptr(v) *(void**)(v)
+#define varindexof(type, variant, index) *varop( +, type, variant, index)
 
 #define varhead(v) (v - (sizeof(size_t) << 2))
 
@@ -84,10 +71,9 @@ typedef enum eHyperVariantType {
 #define varprvti(v) *(size_t*)varhead(v)
 #define varnote(v) *(size_t*)(v - (sizeof(size_t) << 1))
 #define varbytes(v) *(size_t*)(v - sizeof(size_t))
-#define vartype(v) *(varprev(size_t, v, 3))
+#define vartype(v) *varop(-, size_t, v, 3)
 #define varpadding(v) ((vartype(v) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
 #define varlen(v) (varbytes(v) - varpadding(v))
-
 #define varimpact(v)                                                           \
 ((v) ? (sizeof(size_t) << 2) + varbytes(v) : 0L)
 

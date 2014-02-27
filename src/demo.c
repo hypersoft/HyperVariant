@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main ( int argc, char **argv )
 {
 	/* Setup shop, elbow drop from the top */
-	HyperVariant var = varcreate(strVal("Hello World!", 0));
+	HyperVariant var = varcreate(utf8var("Hello World!", 0));
 
 	puts("Testing immediate string data (Hello World!)...");
 	printf("Length: %i; value: %s\n", varlen(var), var);
@@ -44,7 +44,7 @@ int main ( int argc, char **argv )
 
 	printf("\n");
 
-	var = varcreate(strVal(argv[0], 0));
+	var = varcreate(utf8var(argv[0], 0));
 	puts("Testing static string data (argv[0])...");
 	printf("Length: %i; Value: %s\n", varlen(var), var);
 	printf("Total Impact: %i\n", varimpact(var));
@@ -53,18 +53,18 @@ int main ( int argc, char **argv )
 
 	printf("\n");
 
-	var = varcreate(intVal(255));
+	var = varcreate(lngvar(255));
 	puts("Testing integer data (255)...");
-	printf("Length: %i; Value: %i\n", varlen(var), intPtrVal(var));
+	printf("Length: %i; Value: %i\n", varlen(var), varlong(var));
 	printf("Total Impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);
 
 	printf("\n");
 
-	var = varcreate(dblVal(1234.5678));
+	var = varcreate(dblvar(1234.5678));
 	puts("Testing double data (1234.5678)...");
-	printf("Length: %i; Value: %.8g\n", varlen(var), dblPtrVal(var));
+	printf("Length: %i; Value: %.8g\n", varlen(var), vardouble(var));
 	printf("Total Impact: %i\n", varimpact(var));
 	puts("While we have a variant, test the private data...");
 	varprvt(var) = argv[0];

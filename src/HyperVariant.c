@@ -62,13 +62,11 @@ HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 		else if (type & HVT_DOUBLE)	vardouble(var->data) = data;
 		else if (type & HVT_BLOCK) memcpy(var->data, ptr,  bytes);
 		else if (type & HVT_UTF16) {
-			uint16_t * s = (uint16_t *) var->data;
-			*(s + (bytes -= sizeof(uint16_t))) = 0,
-			memcpy(var->data, ptr, bytes);
+			* varop(-, uint16_t, var->data+bytes, 1) = 0,
+			memcpy(var->data, ptr, bytes - sizeof(uint16_t));
 		} else if (type & HVT_UTF32) {
-			wchar_t * s = (wchar_t *) var->data;
-			*(s + (bytes -= sizeof(wchar_t))) = 0,
-			memcpy(var->data, ptr,  bytes);
+			* varop(-, wchar_t, var->data+bytes, 1) = 0,
+			memcpy(var->data, ptr,  bytes - sizeof(wchar_t));
 		}
 		return var->data;
 	} return NULL;

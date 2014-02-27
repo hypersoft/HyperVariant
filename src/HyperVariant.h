@@ -71,12 +71,20 @@ typedef enum eHyperVariantType {
 #define strPtr(p) blkPtr(char, p)
 #define strPtrVal *strPtr(p)
 
-#define varfree(v) free(intPtr(v - (sizeof(size_t) << 2))); v = NULL
-#define varprvt(v) ptrPtrVal(v - (sizeof(size_t) << 2))
-#define varprvti(v) intPtrVal(v - (sizeof(size_t) << 2))
-#define varnote(v) intPtrVal(v - (sizeof(size_t) << 1))
-#define varbytes(v) intPtrVal(v - sizeof(size_t))
-#define vartype(v) intPtrVal(v - ((sizeof(size_t) << 1) + sizeof(size_t)))
+#define varop(op, type, variant, index) \
+	(type*)(variant op (index) ? (index * sizeof(type)) : 0)
+
+#define varprev(type, variant, index) varop( -, type, variant, index)
+#define varindex(type, variant, index) varop( +, type, variant, index)
+
+#define varhead(v) (v - (sizeof(size_t) << 2))
+
+#define varfree(v) free(varhead(v)); v = NULL
+#define varprvt(v) *(void**)varhead(v)
+#define varprvti(v) *(size_t*)varhead(v)
+#define varnote(v) *(size_t*)(v - (sizeof(size_t) << 1))
+#define varbytes(v) *(size_t*)(v - sizeof(size_t))
+#define vartype(v) *(varprev(size_t, v, 3))
 #define varpadding(v) ((vartype(v) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
 #define varlen(v) (varbytes(v) - varpadding(v))
 

@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main ( int argc, char **argv )
 {
 	/* Setup shop, elbow drop from the top */
-	HyperVariant var = varcreate(utf8var("Hello World!", 0));
+	HyperVariant var = varcreate(utf8var("Hello World!"));
 
 	size_t type = vartype(var);
 	size_t bytes = varbytes(var);
-	
+
 	puts("Testing immediate string data (Hello World!)...");
 	printf("Length: %i; value: %s\n", varlen(var), var);
 	printf("string impact: %i\n", varimpact(var));
@@ -47,7 +47,7 @@ int main ( int argc, char **argv )
 
 	printf("\n");
 
-	var = varcreate(utf32var(L"Hello World!", 0));
+	var = varcreate(utf32var(L"Hello World!"));
 	puts("Testing immediate utf32 data (Hello World!)...");
 	printf("Length: %i; value: %S\n", varlen(var), var);
 	printf("string impact: %i\n", varimpact(var));
@@ -56,7 +56,7 @@ int main ( int argc, char **argv )
 
 	printf("\n");
 
-	var = varcreate(utf8var(argv[0], 0));
+	var = varcreate(utf8var(argv[0]));
 	puts("Testing static string data (argv[0])...");
 	printf("Length: %i; Value: %s\n", varlen(var), var);
 	printf("Total Impact: %i\n", varimpact(var));

@@ -55,9 +55,12 @@ typedef enum eHyperVariantType {
 #define numvar(i) sizeof(size_t), dblval(i), HVT_NUMBER
 #define ptrvar(p) sizeof(void *), dblval(p), HVT_POINTER
 #define dblvar(d) sizeof(double), d, HVT_DOUBLE
-#define utf8var(p, l) l, dblval(p), HVT_UTF8
-#define utf16var(p, b) b, dblval(p), HVT_UTF16
-#define utf32var(p, b) b, dblval(p), HVT_UTF32
+#define utf8var(p) 0, dblval(p), HVT_UTF8
+#define utf16var(p) 0, dblval(p), HVT_UTF16
+#define utf32var(p) 0, dblval(p), HVT_UTF32
+#define utf8blk(p, b) b, dblval(p), HVT_UTF8
+#define utf16blk(p, b) b, dblval(p), HVT_UTF16
+#define utf32blk(p, b) b, dblval(p), HVT_UTF32
 #define blkvar(p, b) b, dblval((void*)p), HVT_BLOCK
 
 #define varhead(v) (v - (sizeof(size_t) << 2))

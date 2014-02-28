@@ -47,8 +47,7 @@ typedef enum eHyperVariantType {
 	HVT_UTF32 = 1 << 7, HVT_UCS4 = HVT_UTF32,
 } HyperVariantType;
 
-#define varop(op, type, variant, index) \
-	(type*)(variant op (index * sizeof(type)))
+#define varlea(index, type, address) (type*) ((index * sizeof(type)) + address)
 
 #define ptrval(d) ((void*)(size_t)(d))
 #define dblval(i) ((double)(size_t)(i))
@@ -66,14 +65,18 @@ typedef enum eHyperVariantType {
 #define vardouble(p) *(double*)(p)
 #define varnum(p) *(size_t*)(p)
 #define varptr(p) *(void**)(p)
-#define varidx(type, p, index) *varop( +, type, p, index)
 #define varprvt(p) *(void**)varhead(p)
 #define varprvti(p) *(size_t*)varhead(p)
 #define varnote(p) *(size_t*)(p - (sizeof(size_t) << 1))
 #define varbytes(p) *(size_t*)(p - sizeof(size_t))
-#define vartype(p) *varop(-, size_t, p, 3)
+#define vartype(p) * (size_t*)(varhead(p)+sizeof(size_t))
 #define varpadding(p) ((vartype(p) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
-#define varlen(p) (varbytes(p) - varpadding(p))
+
+extern size_t varucslen(register void * p);
+
+#define varlen(p) \
+((vartype(p) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) ? varucslen(p) : varbytes(p))
+
 #define varimpact(v)                                                           \
 ((v) ? (sizeof(size_t) << 2) + varbytes(v) : 0L)
 

@@ -36,8 +36,20 @@ int main ( int argc, char **argv )
 	/* Setup shop, elbow drop from the top */
 	HyperVariant var = varcreate(utf8var("Hello World!", 0));
 
+	size_t type = vartype(var);
+	size_t bytes = varbytes(var);
+	
 	puts("Testing immediate string data (Hello World!)...");
 	printf("Length: %i; value: %s\n", varlen(var), var);
+	printf("string impact: %i\n", varimpact(var));
+	puts("cleaning up...");
+	varfree(var);
+
+	printf("\n");
+
+	var = varcreate(utf32var(L"Hello World!", 0));
+	puts("Testing immediate utf32 data (Hello World!)...");
+	printf("Length: %i; value: %S\n", varlen(var), var);
 	printf("string impact: %i\n", varimpact(var));
 	puts("cleaning up...");
 	varfree(var);

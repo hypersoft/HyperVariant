@@ -38,9 +38,14 @@ typedef struct sHyperVariant {
 	char data[];
 } iHyperVariant;
 
+size_t varucslen(register void * p) {
+	register size_t padding = varpadding(p);
+	return ((varbytes(p) - padding) / padding);
+}
+
 HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 {
-	iHyperVariant * var; void * ptr = ptrval(data);
+	register iHyperVariant * var; void * ptr = ptrval(data);
 	if (type & (HVT_UTF8)) {
 		if (bytes == 0) bytes = strlen(ptr);
 		bytes++;
@@ -62,11 +67,13 @@ HyperVariant varcreate(size_t bytes, double data, HyperVariantType type)
 		else if (type & HVT_DOUBLE)	vardouble(var->data) = data;
 		else if (type & HVT_BLOCK) memcpy(var->data, ptr,  bytes);
 		else if (type & HVT_UTF16) {
-			* varop(-, uint16_t, var->data+bytes, 1) = 0,
-			memcpy(var->data, ptr, bytes - sizeof(uint16_t));
+			bytes -= sizeof(uint16_t);
+			* varlea(0, uint16_t, var->data+bytes) = 0,
+			memcpy(var->data, ptr, bytes);
 		} else if (type & HVT_UTF32) {
-			* varop(-, wchar_t, var->data+bytes, 1) = 0,
-			memcpy(var->data, ptr,  bytes - sizeof(wchar_t));
+			bytes -= sizeof(wchar_t);
+			* varlea(0, wchar_t, var->data+bytes) = 0,
+			memcpy(var->data, ptr, bytes);
 		}
 		return var->data;
 	} return NULL;

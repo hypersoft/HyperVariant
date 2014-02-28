@@ -85,11 +85,14 @@ $(BUILD_SRC)/HyperVariant.h \
 
 all: $(BUILD_BIN) $(BUILD_OUTPUT) archive library demo
 
-$(BUILD_OBJECT): CFLAGS += -O3 -fPIC $(BUILD_FLAGS)
+$(BUILD_DEMO_OBJECT) $(BUILD_OBJECT): CFLAGS += -g3 -fPIC $(BUILD_FLAGS)
 $(BUILD_OBJECT): $(BUILD_VERSION_SOURCES)
 	@$(make-build-number)
 	$(COMPILE.c) -o $@ $<
 	@$(make-build-revision)
+ifdef BUILD_ASM
+	objdump --disassemble -Sl -M intel,intel-mnemonic $@ | mktools/mkdasm > ${BUILD_OBJECT:%o=%asm}
+endif
 	@echo
 
 $(BUILD_HEADER): $(BUILD_SRC)/HyperVariant.h
@@ -109,7 +112,10 @@ $(BUILD_LIBRARY): $(BUILD_OBJECT)
 
 $(BUILD_DEMO_OBJECT): $(BUILD_DEMO_SRC)
 	@echo -e 'Building $(BUILD_NAME) $(BUILD_TRIPLET) demo...\n'
-	$(COMPILE.c) -o $@ $<
+	$(COMPILE.c) -g3 -o $@ $<
+ifdef BUILD_ASM
+	objdump --disassemble -Sl -M intel,intel-mnemonic $@ | mktools/mkdasm > ${BUILD_DEMO_OBJECT:%o=%asm}
+endif
 	@echo
 
 $(BUILD_DEMO): $(BUILD_DEMO_OBJECT) $(BUILD_OBJECT)

@@ -72,8 +72,6 @@ typedef enum eHyperVariantType {
 #define vartype(p) * (size_t*)(varhead(p)+sizeof(size_t))
 #define varpadding(p) ((vartype(p) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
 
-extern size_t varucslen(register void * p);
-
 #define varlen(p) \
 ((vartype(p) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) ? varucslen(p) : varbytes(p))
 
@@ -85,6 +83,7 @@ extern size_t varucslen(register void * p);
 typedef void * HyperVariant;
 
 #ifndef HyperVariant_c
+extern size_t varucslen(register void * p);
 extern HyperVariant varcreate
 (
 	size_t bytes,

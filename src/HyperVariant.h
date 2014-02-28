@@ -65,11 +65,12 @@ typedef enum eHyperVariantType {
 #define vardouble(p) *(double*)(p)
 #define varnum(p) *(size_t*)(p)
 #define varptr(p) *(void**)(p)
-#define varprvt(p) *(void**)varhead(p)
-#define varprvti(p) *(size_t*)varhead(p)
-#define varnote(p) *(size_t*)(p - (sizeof(size_t) << 1))
-#define varbytes(p) *(size_t*)(p - sizeof(size_t))
-#define vartype(p) * (size_t*)(varhead(p)+sizeof(size_t))
+
+#define varprvt(p) * (void**)(p - (sizeof(size_t) << 2))
+#define vartype(p) * (size_t*)(p - sizeof(size_t) - sizeof(size_t) - sizeof(size_t))
+#define varnote(p) * (size_t*)(p - (sizeof(size_t) << 1))
+#define varbytes(p) * (size_t*)(p - sizeof(size_t))
+
 #define varpadding(p) ((vartype(p) & (HVT_UTF8 | HVT_UTF16 | HVT_UTF32)) >> 5)
 
 #define varlen(p) \
